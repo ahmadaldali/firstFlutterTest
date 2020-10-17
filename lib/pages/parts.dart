@@ -262,7 +262,14 @@ class Parts extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(nameApp),
-        centerTitle: true,
+        centerTitle: false,
+        leading: RaisedButton(
+          color: ConstraintClass.mainAppColor,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.exit_to_app),
+        ),
       ),
       body: Builder(builder: (context) {
         return _buildPartsBody();

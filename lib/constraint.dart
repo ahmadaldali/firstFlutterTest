@@ -9,11 +9,12 @@ class ConstraintClass {
 
 //string section
   static final String appName = 'My Application Test';
-  static final String titleAuthScreen = 'Welocome To My App';
+  static final String titleAuthScreen = 'Welcome To My App';
   static final String passLabel = 'Enter Your Password:';
   static final String emailLabel = 'Enter Your Email:';
   static final String emailHint = 'Enter Your Email ...';
   static final String passHint = 'Enter Your Password ...';
+  static final String errorMsg = 'Something error!';
 
   static double getSpaceBetweenAuthButtons(BuildContext context) {
     return MediaQuery.of(context).size.height * 0.03;

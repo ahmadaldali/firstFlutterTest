@@ -1,7 +1,10 @@
+import 'package:auth_test_app/pages/parts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:auth_test_app/constraint.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 // ignore: must_be_immutable
 class Login extends StatefulWidget {
@@ -14,9 +17,10 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  var _auth;
+  FirebaseAuth _auth;
   String _email;
   String _pass;
+  bool progress = false;
 
   // Define an async function to initialize FlutterFire
   void initializeFlutterFire() async {
@@ -114,11 +118,62 @@ class _LoginState extends State<Login> {
         children: [
           FlatButton(
             onPressed: () async {
-              final newUser = await _auth.createUserWithEmailAndPassword(
-                  email: _email, password: _pass);
-              if (newUser != null) {
-                print(newUser);
+              //close keyboard
+              SystemChannels.textInput.invokeMethod('TextInput.hide');
+
+              setState(() {
+                progress = true;
+              });
+              try {
+                if (widget.authType.toLowerCase() == 'sign up') {
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: _email, password: _pass);
+                  if (newUser != null) {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Parts();
+                    }));
+                  }
+                } else {
+                  if (widget.authType.toLowerCase() == 'sign in') {
+                    final logedUser = await _auth.signInWithEmailAndPassword(
+                        email: _email, password: _pass);
+                    if (logedUser != null) {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return Parts();
+                      }));
+                    }
+                  }
+                }
+              } catch (e) {
+                showDialog(
+                    context: context,
+                    child: Builder(builder: (context) {
+                      return AlertDialog(
+                        backgroundColor: ConstraintClass.secondaryBlueAppColor,
+                        content: Text(
+                          ConstraintClass.errorMsg,
+                          style: ConstraintClass.buildTextStyle(),
+                        ),
+                        actions: [
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Ok',
+                              style: ConstraintClass.buildTextStyle(),
+                            ),
+                          )
+                        ],
+                      );
+                    }));
               }
+
+              setState(() {
+                progress = false;
+              });
             },
             child: Text(
               widget.authType.toUpperCase(),
@@ -158,17 +213,21 @@ class _LoginState extends State<Login> {
       child: Scaffold(
         backgroundColor: ConstraintClass.secondaryBlueAppColor,
         //appBar: Luncher.buildAppBar(),
-        body: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: ConstraintClass.mainAppColor,
-          ),
-          margin: EdgeInsets.all(ConstraintClass.getMarignOfLoginForm(context)),
-          padding:
-              EdgeInsets.all(ConstraintClass.getMarignOfLoginForm(context)),
-          child: Form(
-            key: _formKey,
-            child: buildFormContent(),
+        body: ModalProgressHUD(
+          inAsyncCall: progress,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: ConstraintClass.mainAppColor,
+            ),
+            margin:
+                EdgeInsets.all(ConstraintClass.getMarignOfLoginForm(context)),
+            padding:
+                EdgeInsets.all(ConstraintClass.getMarignOfLoginForm(context)),
+            child: Form(
+              key: _formKey,
+              child: buildFormContent(),
+            ),
           ),
         ),
       ),
