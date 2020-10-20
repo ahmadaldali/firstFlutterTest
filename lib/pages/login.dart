@@ -48,6 +48,32 @@ class _LoginState extends State<Login> {
     );
   }
 
+  showErrorDialog() {
+    showDialog(
+      context: context,
+      child: Builder(builder: (context) {
+        return AlertDialog(
+          backgroundColor: ConstraintClass.secondaryBlueAppColor,
+          content: Text(
+            ConstraintClass.errorMsg,
+            style: ConstraintClass.buildTextStyle(),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Ok',
+                style: ConstraintClass.buildTextStyle(),
+              ),
+            )
+          ],
+        );
+      }),
+    );
+  }
+
   Widget buildEmailInput() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
@@ -147,28 +173,7 @@ class _LoginState extends State<Login> {
                   }
                 }
               } catch (e) {
-                showDialog(
-                    context: context,
-                    child: Builder(builder: (context) {
-                      return AlertDialog(
-                        backgroundColor: ConstraintClass.secondaryBlueAppColor,
-                        content: Text(
-                          ConstraintClass.errorMsg,
-                          style: ConstraintClass.buildTextStyle(),
-                        ),
-                        actions: [
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'Ok',
-                              style: ConstraintClass.buildTextStyle(),
-                            ),
-                          )
-                        ],
-                      );
-                    }));
+                showErrorDialog();
               }
 
               setState(() {
@@ -186,23 +191,27 @@ class _LoginState extends State<Login> {
   }
 
   Widget buildFormContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return ListView(
       children: [
-        buildWelcomeMsg(),
-        buildBoxBetweenLabelAndTextInput(),
-        buildEmailInput(),
-        SizedBox(
-          height: ConstraintClass.getSpaceBetweenAuthButtons(context),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            buildWelcomeMsg(),
+            buildBoxBetweenLabelAndTextInput(),
+            buildEmailInput(),
+            SizedBox(
+              height: ConstraintClass.getSpaceBetweenAuthButtons(context),
+            ),
+            //buildLabel(ConstraintClass.passLabel),
+            /*SizedBox(
+              height: ConstraintClass.getSpaceLabelAndTextInput(context),
+            ),*/
+            buildPassInput(),
+            buildBoxBetweenLabelAndTextInput(),
+            buildSubmitButton(),
+          ],
         ),
-        //buildLabel(ConstraintClass.passLabel),
-        /*SizedBox(
-          height: ConstraintClass.getSpaceLabelAndTextInput(context),
-        ),*/
-        buildPassInput(),
-        buildBoxBetweenLabelAndTextInput(),
-        buildSubmitButton(),
       ],
     );
   }

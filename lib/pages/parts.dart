@@ -150,6 +150,9 @@ class _WeightAndAgeState extends State<WeightAndAge> {
       Container(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FloatingActionButton(
+              mini: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? false
+                  : true,
               heroTag: widget.title == 'age' ? 'age' : 'weight',
               onPressed: () {
                 setState(() {
@@ -161,6 +164,9 @@ class _WeightAndAgeState extends State<WeightAndAge> {
               child: FaIcon(FontAwesomeIcons.plus)),
           Padding(padding: EdgeInsets.all(5)),
           FloatingActionButton(
+            mini: MediaQuery.of(context).orientation == Orientation.portrait
+                ? false
+                : true,
             heroTag: widget.title == 'age' ? 'age-' : 'weight-',
             onPressed: () {
               setState(() {
@@ -263,13 +269,16 @@ class Parts extends StatelessWidget {
       appBar: AppBar(
         title: Text(nameApp),
         centerTitle: false,
-        leading: RaisedButton(
-          color: ConstraintClass.mainAppColor,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.exit_to_app),
-        ),
+        leading: null,
+        actions: [
+          RaisedButton(
+            color: ConstraintClass.mainAppColor,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.exit_to_app),
+          ),
+        ],
       ),
       body: Builder(builder: (context) {
         return _buildPartsBody();
