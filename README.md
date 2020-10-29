@@ -1,4 +1,4 @@
-# auth_test_app
+# flutter application test
 
 A new Flutter application.
 
